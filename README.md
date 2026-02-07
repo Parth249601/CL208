@@ -82,26 +82,30 @@ Solves a system of coupled ODEs describing molar flow rates in a **Packed Bed Re
 
 **Reactions modeled:**
 
-$$A + 2B \rightarrow C \qquad (r_1 = k_1 \, C_A \, C_B^2)$$
+```math
+A + 2B \rightarrow C \qquad (r_1 = k_1 \, C_A \, C_B^2)
+```
 
-$$2A + 3C \rightarrow D \qquad (r_2 = k_2 \, C_A^2 \, C_C^3)$$
+```math
+2A + 3C \rightarrow D \qquad (r_2 = k_2 \, C_A^2 \, C_C^3)
+```
 
 **Key features:**
 
-- Accounts for **pressure drop** via the Ergun equation parameter $\alpha$, modifying concentrations as $C_i = C_{T0} \cdot \frac{F_i}{F_T} \cdot (1 - \alpha W)$.
-- Tracks four species: $F_A$, $F_B$, $F_C$, $F_D$ as functions of catalyst weight $W$.
+- Accounts for **pressure drop** via the Ergun equation parameter α, modifying concentrations as Cᵢ = C_T0 · (Fᵢ/F_T) · (1 − αW).
+- Tracks four species: F_A, F_B, F_C, F_D as functions of catalyst weight W.
 - Solved using `scipy.integrate.solve_ivp` with the **Radau** (implicit Runge–Kutta) method for stiff systems.
 - Outputs molar flow rate profiles vs. catalyst weight.
 
 **Parameters:**
 
-| Symbol   | Value       | Description                  |
-| -------- | ----------- | ---------------------------- |
-| $k_1$    | 100         | Rate constant for reaction 1 |
-| $k_2$    | 1500        | Rate constant for reaction 2 |
-| $C_{T0}$ | 0.2 mol/L   | Total inlet concentration    |
-| $\alpha$ | 0.0019 kg⁻¹ | Pressure drop parameter      |
-| $W$      | 0 – 1000 kg | Catalyst weight range        |
+| Symbol | Value       | Description                  |
+| ------ | ----------- | ---------------------------- |
+| k₁     | 100         | Rate constant for reaction 1 |
+| k₂     | 1500        | Rate constant for reaction 2 |
+| C_T0   | 0.2 mol/L   | Total inlet concentration    |
+| α      | 0.0019 kg⁻¹ | Pressure drop parameter      |
+| W      | 0 – 1000 kg | Catalyst weight range        |
 
 ---
 
@@ -127,18 +131,22 @@ Determines the **reaction order** and **rate constant** for a liquid-phase react
 **Method:** Log-log analysis of rate vs. concentration.
 
 - Converts exit concentration data from a CSTR into reaction rates using:
-  $$-r_A = \frac{v_0 \, C_{A0} - v_0 \left(1 - \frac{X}{2}\right) C_A}{V}$$
-- Performs linear regression on $\ln(-r_A)$ vs. $\ln(C_A)$ to extract the reaction order (slope) and rate constant (intercept).
+
+```math
+-r_A = \frac{v_0 \, C_{A0} - v_0 \left(1 - \frac{X}{2}\right) C_A}{V}
+```
+
+- Performs linear regression on ln(−r_A) vs. ln(C_A) to extract the reaction order (slope) and rate constant (intercept).
 - Plots the log-log fit alongside experimental data points.
 
 **Given Data:**
 
-| $v_0$ (L/hr) | $C_A$ (mol/L) |
-| ------------ | ------------- |
-| 10           | 85.7          |
-| 3            | 66.7          |
-| 1.2          | 50            |
-| 0.5          | 33.4          |
+| v₀ (L/hr) | C_A (mol/L) |
+| --------- | ----------- |
+| 10        | 85.7        |
+| 3         | 66.7        |
+| 1.2       | 50          |
+| 0.5       | 33.4        |
 
 ---
 
@@ -146,16 +154,22 @@ Determines the **reaction order** and **rate constant** for a liquid-phase react
 
 Analyzes the **reversible first-order isomerization** of _n_-pentane to _i_-pentane using the integral method.
 
-$$A \underset{k_2}{\overset{k_1}{\rightleftharpoons}} R$$
+```math
+A \underset{k_2}{\overset{k_1}{\rightleftharpoons}} R
+```
 
 **Method:**
 
 - Linearizes the integrated rate law:
-  $$\ln\!\left(\frac{C_{R_e} - C_{R_0}}{C_{R_e} - C_R}\right) = (k_1 + k_2) \, t$$
-- Uses `scipy.stats.linregress` to extract $k_1 + k_2$ from the slope.
-- Decomposes into individual constants using the equilibrium relation $K_{eq} = k_1 / k_2 = C_{R_e} / C_{A_e}$.
 
-**Results reported:** $k_1$, $k_2$, $K_{eq}$, and the proposed rate equation $-r_A = k_1 C_A - k_2 C_R$.
+```math
+\ln\!\left(\frac{C_{R_e} - C_{R_0}}{C_{R_e} - C_R}\right) = (k_1 + k_2) \, t
+```
+
+- Uses `scipy.stats.linregress` to extract (k₁ + k₂) from the slope.
+- Decomposes into individual constants using the equilibrium relation K_eq = k₁/k₂ = C_Re/C_Ae.
+
+**Results reported:** k₁, k₂, K_eq, and the proposed rate equation −r_A = k₁·C_A − k₂·C_R.
 
 ---
 
@@ -165,8 +179,8 @@ Same reaction system as `q3.py`, solved via the **differential method**.
 
 **Method:**
 
-- Computes $dC_R/dt$ by finite differences at interval midpoints.
-- Plots $dC_R/dt$ vs. $(C_{R_e} - C_R)$; the slope yields $k_1 + k_2$.
+- Computes dC_R/dt by finite differences at interval midpoints.
+- Plots dC_R/dt vs. (C_Re − C_R); the slope yields (k₁ + k₂).
 - Decomposes rate constants identically to the integral approach.
 
 **Output plots:**
@@ -186,17 +200,19 @@ Same reaction system as `q3.py`, solved via the **differential method**.
 
 Determines the kinetics of a **gas-phase decomposition** reaction:
 
-$$2A \rightarrow B$$
+```math
+2A \rightarrow B
+```
 
 conducted at 100 °C in a constant-volume batch reactor with total pressure measured over time.
 
 **Method:**
 
-- Corrects initial pressure for temperature using Gay-Lussac's Law: $P_0 = P_{\text{cold}} \cdot (T_{\text{rxn}} / T_{\text{cold}})$.
-- Extracts partial pressure of A from total pressure: $P_A = 2P_T - P_{A_0}$.
-- Converts to concentration: $C_A = P_A / (RT)$.
-- Applies the differential method: finite-difference $-dC_A/dt$ vs. $C_A$ on a log-log scale.
-- Linear regression yields the **reaction order** $n$ and **rate constant** $k$.
+- Corrects initial pressure for temperature using Gay-Lussac's Law: P₀ = P_cold · (T_rxn / T_cold).
+- Extracts partial pressure of A from total pressure: P_A = 2·P_T − P_A0.
+- Converts to concentration: C_A = P_A / (RT).
+- Applies the differential method: finite-difference −dC_A/dt vs. C_A on a log-log scale.
+- Linear regression yields the **reaction order** n and **rate constant** k.
 
 ---
 
@@ -207,9 +223,9 @@ Same reaction as `q1_differential.py`, analyzed via the **integral method**.
 **Method:**
 
 - Tests candidate rate laws (first-order and second-order) by plotting the appropriate linearized forms:
-  - First order: $\ln(C_{A0}/C_A)$ vs. $t$
-  - Second order: $(1/C_A - 1/C_{A0})$ vs. $t$
-- Evaluates goodness of fit via Pearson correlation ($r$) and $R^2$ from `sklearn.linear_model.LinearRegression`.
+  - First order: ln(C_A0 / C_A) vs. t
+  - Second order: (1/C_A − 1/C_A0) vs. t
+- Evaluates goodness of fit via Pearson correlation (r) and R² from `sklearn.linear_model.LinearRegression`.
 
 **Output plots:** `plots/q1_integral_method_plot.png`, `plots/q1_diff_method_plot.png`
 
@@ -217,23 +233,23 @@ Same reaction as `q1_differential.py`, analyzed via the **integral method**.
 
 ### `q2_integral.py` — CSTR Rate Law from Space-Time Data
 
-Determines the rate law for a **liquid-phase reaction in a CSTR** given space-time ($\tau$) and exit concentration data.
+Determines the rate law for a **liquid-phase reaction in a CSTR** given space-time (τ) and exit concentration data.
 
 **Given Data:**
 
-| $\tau$ (s) | $C_A$ (mol/dm³) |
-| ---------- | --------------- |
-| 15         | 1.5             |
-| 38         | 1.25            |
-| 100        | 1.0             |
-| 300        | 0.75            |
-| 1200       | 0.5             |
+| τ (s) | C_A (mol/dm³) |
+| ----- | ------------- |
+| 15    | 1.5           |
+| 38    | 1.25          |
+| 100   | 1.0           |
+| 300   | 0.75          |
+| 1200  | 0.5           |
 
 **Method:**
 
-- Computes rates from the CSTR design equation: $-r_A = (C_{A0} - C_A) / \tau$.
-- Tests first, second, and third-order fits by plotting rate vs. $C_A^n$.
-- Best fit found for **third-order kinetics** ($-r_A = k \, C_A^3$).
+- Computes rates from the CSTR design equation: −r_A = (C_A0 − C_A) / τ.
+- Tests first, second, and third-order fits by plotting rate vs. C_Aⁿ.
+- Best fit found for **third-order kinetics**: −r_A = k·C_A³.
 
 ---
 
@@ -243,19 +259,19 @@ Determines the reaction order for a **batch liquid-phase reaction** with concent
 
 **Given Data:**
 
-| $t$ (s) | $C_A$ (mol/m³) |
-| ------- | -------------- |
-| 0       | 1000           |
-| 100     | 500            |
-| 200     | 333            |
-| 300     | 250            |
-| 400     | 200            |
+| t (s) | C_A (mol/m³) |
+| ----- | ------------ |
+| 0     | 1000         |
+| 100   | 500          |
+| 200   | 333          |
+| 300   | 250          |
+| 400   | 200          |
 
 **Method:**
 
 - Tests linearized integral forms for first and second order.
-- Confirms **second-order kinetics** from the linearity of $(1/C_A - 1/C_{A0})$ vs. $t$.
-- Extracts the rate constant $k$ from the slope.
+- Confirms **second-order kinetics** from the linearity of (1/C_A − 1/C_A0) vs. t.
+- Extracts the rate constant k from the slope.
 
 ---
 
@@ -265,27 +281,29 @@ Determines the reaction order for a **batch liquid-phase reaction** with concent
 
 ---
 
-### `q1.py` — Series-Parallel Reversible Reactions ($A \leftrightarrow B \leftrightarrow C$)
+### `q1.py` — Series-Parallel Reversible Reactions (A ⇌ B ⇌ C)
 
 Simulates a system of **consecutive reversible reactions** in a batch reactor:
 
-$$A \underset{k_1'}{\overset{k_1}{\rightleftharpoons}} B \underset{k_2'}{\overset{k_2}{\rightleftharpoons}} C$$
+```math
+A \underset{k_1'}{\overset{k_1}{\rightleftharpoons}} B \underset{k_2'}{\overset{k_2}{\rightleftharpoons}} C
+```
 
 **Key features:**
 
-- Solves three coupled ODEs for $C_A$, $C_B$, $C_C$ using `solve_ivp`.
-- Demonstrates the characteristic rise-and-fall behavior of the intermediate $B$.
+- Solves three coupled ODEs for C_A, C_B, C_C using `solve_ivp`.
+- Demonstrates the characteristic rise-and-fall behavior of the intermediate B.
 - Plots concentration profiles of all three species over time.
 
 **Parameters:**
 
 | Constant | Value     |
 | -------- | --------- |
-| $k_1$    | 0.1       |
-| $k_1'$   | 0.01      |
-| $k_2$    | 0.003     |
-| $k_2'$   | 0.003     |
-| $C_{A0}$ | 1.0 mol/L |
+| k₁       | 0.1       |
+| k₁'      | 0.01      |
+| k₂       | 0.003     |
+| k₂'      | 0.003     |
+| C_A0     | 1.0 mol/L |
 
 ---
 
@@ -293,28 +311,33 @@ $$A \underset{k_1'}{\overset{k_1}{\rightleftharpoons}} B \underset{k_2'}{\overse
 
 Models **parallel competing reactions** in a semi-batch reactor where species B is continuously fed:
 
-$$A + B \xrightarrow{k_1} C$$
-$$A + 2B \xrightarrow{k_2} D$$
+```math
+A + B \xrightarrow{k_1} C
+```
+
+```math
+A + 2B \xrightarrow{k_2} D
+```
 
 **Key features:**
 
-- Semi-batch operation: $B$ is fed at volumetric flow rate $v_0$ into a reactor of volume $V$.
-- Solves four coupled ODEs for $C_A$, $C_B$, $C_C$, $C_D$.
+- Semi-batch operation: B is fed at volumetric flow rate v₀ into a reactor of volume V.
+- Solves four coupled ODEs for C_A, C_B, C_C, C_D.
 - Computes **instantaneous selectivity**:
-  - $S_{C/D} = \frac{k_1}{k_2 \, C_B}$, favoring product C at low $C_B$.
-  - $S_{D/C} = \frac{k_2 \, C_B}{k_1}$, favoring product D at high $C_B$.
+  - S_C/D = k₁ / (k₂·C_B), favoring product C at low C_B.
+  - S_D/C = (k₂·C_B) / k₁, favoring product D at high C_B.
 - Side-by-side subplots display concentration profiles and selectivity evolution.
 
 **Parameters:**
 
-| Symbol   | Value      | Description                    |
-| -------- | ---------- | ------------------------------ |
-| $k_1$    | 0.1        | Rate constant for $A+B \to C$  |
-| $k_2$    | 0.002      | Rate constant for $A+2B \to D$ |
-| $V$      | 100 L      | Reactor volume                 |
-| $v_0$    | 1.0 L/time | Volumetric feed rate of B      |
-| $C_{A0}$ | 10.0 mol/L | Initial concentration of A     |
-| $C_{B0}$ | 20.0 mol/L | Initial concentration of B     |
+| Symbol | Value      | Description                |
+| ------ | ---------- | -------------------------- |
+| k₁     | 0.1        | Rate constant for A+B → C  |
+| k₂     | 0.002      | Rate constant for A+2B → D |
+| V      | 100 L      | Reactor volume             |
+| v₀     | 1.0 L/time | Volumetric feed rate of B  |
+| C_A0   | 10.0 mol/L | Initial concentration of A |
+| C_B0   | 20.0 mol/L | Initial concentration of B |
 
 **Output plots:** `q2.png`, `q2_selectivity.png`
 
